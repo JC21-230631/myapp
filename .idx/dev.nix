@@ -2,14 +2,19 @@
 # see: https://firebase.google.com/docs/studio/customize-workspace
 { pkgs, ... }: {
   # Which nixpkgs channel to use.
-  channel = "stable-24.05"; # or "unstable"
+  channel = "unstable"; # or "stable-24.05"
   # Use https://search.nixos.org/packages to find packages
   packages = [
+    pkgs.flutter
     pkgs.jdk21
     pkgs.unzip
+    pkgs.google-chrome # Added to provide a web browser for the preview
   ];
   # Sets environment variables in the workspace
-  env = {};
+  env = {
+    # Corresponds to the added google-chrome package
+    CHROME_EXECUTABLE = "${pkgs.google-chrome}/bin/google-chrome";
+  };
   idx = {
     # Search for the extensions you want on https://open-vsx.org/ and use "publisher.id"
     extensions = [
@@ -20,6 +25,7 @@
       # Runs when a workspace is first created with this `dev.nix` file
       onCreate = { };
       # To run something each time the workspace is (re)started, use the `onStart` hook
+      # Resetting the environment to fix preview sync issues.
     };
     # Enable previews and customize configuration
     previews = {
